@@ -1,0 +1,20 @@
+# scripts/analyze_blockchain_data.py
+
+import sqlite3
+import pandas as pd
+from utils.db_utils import create_connection
+
+def analyze_blockchain_data():
+    conn = create_connection('data/blockchain.db')
+    query = "SELECT * FROM blocks"
+    df = pd.read_sql(query, conn)
+    conn.close()
+
+    # Example analysis: Count of transactions per block
+    df['tx_count'] = df['txids'].apply(lambda x: len(eval(x)))
+    avg_tx_per_block = df['tx_count'].mean()
+    return avg_tx_per_block
+
+# Example usage:
+# avg_tx_per_block = analyze_blockchain_data()
+# print(f"Average number of transactions per block: {avg_tx_per_block}")
